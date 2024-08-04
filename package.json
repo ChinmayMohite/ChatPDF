@@ -12,6 +12,8 @@
     "@clerk/nextjs": "^5.2.12",
     "@neondatabase/serverless": "^0.9.4",
     "@radix-ui/react-slot": "^1.1.0",
+    "@tanstack/react-query": "^5.51.21",
+    "aws-sdk": "^2.1667.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "dotenv": "^16.4.5",
