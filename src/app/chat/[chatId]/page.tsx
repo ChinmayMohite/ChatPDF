@@ -1,16 +1,47 @@
-import React from 'react'
-import { auth } from '@clerk/nextjs/server';
+import React from "react";
+import { auth } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
+import { db } from "@/lib/db";
+import { eq } from "drizzle-orm";
+import { chats } from "@/lib/db/schema";
+import ChatSideBar from "@/components/ChatSideBar";
+
 type Props = {
-  params : {
-    chatId : string;
-  }
-}
+  params: {
+    chatId: string;
+  };
+};
 
-const ChatPage = async ({params: {chatId}}: Props) => {
+const ChatPage = async ({ params: { chatId } }: Props) => { 
   const {userId} = await auth();
-  return (
-    <div>ChatPage {chatId}</div>
-  )
-}
+  if (!userId) {
+    return redirect("/sign-in");
+  }
+  const _chats = await db.select().from(chats).where(eq(chats.userId, userId));
+  if(!_chats){
+    return redirect("/");
+  }
+  if(!_chats.find(chat => chat.id === parseInt(chatId))){
+    return redirect("/");
+  }
+  return <div className="flex max-h-screen overflow-scroll no-scrollbar scrollbar-hide">
+    <div className="flex w-full max-h-screen overflow-scroll">
+      {/* Render chat Sidebar */}
+      <div className="flex-[1] max-w-s">
+        {/* Render Sidebar */}
+        <ChatSideBar chats={_chats} chatId={parseInt(chatId)}></ChatSideBar>
+      </div>
+      {/* Render Pdf Viewer */}
+      <div className="flex-[5] max-h-screen p-4 overflow-scroll no-scrollbar scrollbar-hide">
+        {/* Render Pdf */}
+      </div>
+      {/* Render Chats */}
+      <div className="flex-[3] border-l-4 border-1-slate-200 no-scrollbar scrollbar-hide">
+        {/* Render Chats Component */}
+      </div>
 
-export default ChatPage
+    </div>
+  </div>;
+};
+
+export default ChatPage;
