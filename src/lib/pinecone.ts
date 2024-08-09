@@ -10,12 +10,12 @@ import { getEmbeddings } from "./embeddings";
 import md5 from "md5";
 import { convertToAscii } from "./utils";
 
-let pinecone: Pinecone | null = null;
+let pinecone : Pinecone | null = null;
 
 export const getPineconeClient = () => {
   return new Pinecone({
-    apiKey: process.env.PINCONE_API_KEY!,
-    // environment : process.env.PINCONE_ENVIRONMENT!,
+    // environment : process.env.PINECONE_ENVIRONMENT!,
+    apiKey: process.env.PINECONE_API_KEY!,
   });
 };
 
@@ -26,10 +26,10 @@ type PDFPage = {
   };
 };
 
-export async function loadS3intoPinecone(file_key: string) {
+export async function loadS3intoPinecone(fileKey: string) {
   // Loading the PDF from S3 into Pinecone ::
-  console.log("Loading S3 into Pinecone :: " + file_key);
-  const file_name = await downloadFromS3(file_key);
+  console.log("Loading S3 into Pinecone :: " + fileKey);
+  const file_name = await downloadFromS3(fileKey);
   if (!file_name) {
     throw new Error("Could not load S3 into pinecone");
   }
@@ -44,8 +44,8 @@ export async function loadS3intoPinecone(file_key: string) {
   const vectors = await Promise.all(documents.flat().map(embedDocument));
 
   const client = await getPineconeClient();
-  const pineconeIndex = client.Index("chat-with-pdf");
-  const namespace = pineconeIndex.namespace(convertToAscii(file_key));
+  const pineconeIndex = await client.Index("chat-with-pdf");
+  const namespace = pineconeIndex.namespace(convertToAscii(fileKey));
   console.log("<------Upsert to Pinecone Index------>");
   await namespace.upsert(vectors);
   console.log("<------Done Upserting to Pinecone Index------>");

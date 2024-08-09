@@ -3,13 +3,15 @@ import { uploadToS3 } from "@/lib/s3";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { Inbox, Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { useDropzone } from "react-dropzone";
 import toast from "react-hot-toast";
-// import toast from "react-hot-toast";
+
 type Props = {};
 
 const FileUpload = (props: Props) => {
+  const router = useRouter();
   const [uploading, setUploading] = useState(false);
   // Create Mutation for react queries
   const { mutate, isPending } = useMutation({
@@ -27,13 +29,14 @@ const FileUpload = (props: Props) => {
       return response.data;
     },
   });
+
   // TODO: Implement file upload functionality
   const { getRootProps, getInputProps } = useDropzone({
     accept: { "application/pdf": [".pdf"] },
     multiple: false,
     maxFiles: 1,
     onDrop: async (acceptedFiles) => {
-      console.log("File uploaded: ", acceptedFiles[0]);
+      console.log("File uploading: ", acceptedFiles[0]);
       const file = acceptedFiles[0];
       if (file.size > 10 * 1024 * 1024) {
         // toast.error("File size exceeds 10MB");
@@ -49,10 +52,11 @@ const FileUpload = (props: Props) => {
           return;
         }
         mutate(data, {
-          onSuccess: (data) => {
+          onSuccess: ({ chats_id }) => {
             toast.success("Chat created successfully: ");
-            console.log(data);
+            console.log("FUCK MY LIFE !!",data);
             // Redirect to chat page
+            router.push(`/chat/${chats_id}`);
           },
           onError: (error) => {
             toast.error("Error creating chat: ");
