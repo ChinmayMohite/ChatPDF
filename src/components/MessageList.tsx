@@ -1,29 +1,41 @@
-import React from "react";
+"use client";
 import { cn } from "@/lib/utils";
 import { Message } from "ai/react";
-import { Loader2 } from "lucide-react";
+import React from "react";
+import { useEffect, useRef } from "react";
 import ReactMarkdown from "react-markdown"; // Import react-markdown
 import remarkGfm from "remark-gfm"; // Import remark-gfm for GitHub Flavored Markdown
-import { useEffect, useRef } from 'react';
 
 type Props = {
-  isLoading: boolean;
   messages: Message[];
 };
 
-const MessageList = ({ messages, isLoading }: Props) => {
-  if (isLoading) {
+const MessageList = ({ messages }: Props) => {
+  //scroll to bottom when new message comes
+  const messageEndRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (messageEndRef.current && containerRef.current) {
+      const { scrollTop, scrollHeight, clientHeight } = containerRef.current;
+      const atBottom = scrollTop + clientHeight >= scrollHeight - 50;
+      if (atBottom) {
+        messageEndRef.current?.scrollIntoView({
+          block: "end",
+          behavior: "smooth",
+        });
+      }
+    }
+  }, [messages]);
+  if (!messages)
     return (
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-        <Loader2 className="w-6 h-6 animate-spin" />
-      </div>
+      <div className="flex flex-grow max-h-screen overflow-scroll flex-col gap-2 px-4 pb-2"></div>
     );
-  }
-
-  if (!messages) return <></>;
-
   return (
-    <div className="flex flex-col gap-2 px-4">
+    <div
+      ref={containerRef}
+      className="flex flex-grow max-h-screen overflow-scroll flex-col gap-2 px-4 pb-2 no-scrollbar"
+    >
       {messages.map((message) => {
         return (
           <div
@@ -35,17 +47,15 @@ const MessageList = ({ messages, isLoading }: Props) => {
           >
             <div
               className={cn(
-                "rounded-lg px-3 py-2 shadow-md ring-1 ring-gray-900/10",
+                "rounded-lg px-3 text-sm py-1 shadow-md ring-1 ring-gray-900/10",
                 {
                   "bg-blue-400 text-slate-50": message.role === "user",
-                  "bg-white text-gray-900": message.role === "assistant",
                 }
               )}
             >
-              {/* Render the message using ReactMarkdown with styling */}
-              <ReactMarkdown
-                remarkPlugins={[remarkGfm]} 
-                className="prose prose-blue max-w-full" 
+               <ReactMarkdown
+                remarkPlugins={[remarkGfm]}
+                className="prose prose-blue max-w-full"
               >
                 {message.content}
               </ReactMarkdown>
@@ -53,6 +63,7 @@ const MessageList = ({ messages, isLoading }: Props) => {
           </div>
         );
       })}
+      <div ref={messageEndRef}></div>
     </div>
   );
 };

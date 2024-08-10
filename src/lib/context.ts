@@ -73,21 +73,22 @@ export async function getContext(query: string, file_key: string) {
           ''
         )
         .trim();
-      return context;
-    };
-
-    let baseScore = 0.8;
-    let contextText = matchVectors(candidateVectors, baseScore);
-    while (contextText === '' && baseScore > 0.6) {
-      baseScore -= 0.05;
-      contextText = matchVectors(candidateVectors, baseScore);
-    }
-
-    const context = {
-      baseScore: baseScore,
-      text: contextText,
-    };
-    // context include the best match text chunk
+        return context;
+      };
+      
+      let baseScore = 0.8;
+      let contextText = matchVectors(candidateVectors, baseScore);
+      while (contextText === '' && baseScore > 0.6) {
+        baseScore -= 0.05;
+        contextText = matchVectors(candidateVectors, baseScore);
+      }
+      
+      const context = {
+        baseScore: baseScore,
+        text: contextText,
+      };
+      // context include the best match text chunk
+      // console.log(context)
     return context;
   } catch (error) {
     console.error('Error when getting context: ', error);

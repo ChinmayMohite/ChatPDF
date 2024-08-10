@@ -81,3 +81,12 @@ export async function POST(req: Request) {
     console.log("Error in chat route.ts", error);
   }
 }
+
+
+{/* Render the message using ReactMarkdown with styling */}
+              <ReactMarkdown
+                remarkPlugins={[remarkGfm]}
+                className="prose prose-blue max-w-full"
+              >
+                {message.content}
+              </ReactMarkdown>
