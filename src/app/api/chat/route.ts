@@ -7,8 +7,8 @@ import { chats, messages as messagesDB, tokenRecords } from '@/lib/db/schema';
 import { eq } from 'drizzle-orm';
 import { NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
-import { tokenVerify } from '@/lib/tokenVerify';
-import { tokenCleanUp } from '@/lib/tokenCleanUp';
+// import { tokenVerify } from '@/lib/tokenVerify';
+// import { tokenCleanUp } from '@/lib/tokenCleanUp';
 
 //connect to openai api when chatting
 export const runtime = 'edge';
@@ -36,7 +36,7 @@ const openai = new OpenAIApi(config);
 export async function POST(req: Request) {
   try {
     const { messages, chatId } = await req.json();
-    const { userId } = await auth();
+    const { userId } = auth();
     if (!userId) {
       throw new unauthorizedError('unauthorized');
     }
