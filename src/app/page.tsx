@@ -56,7 +56,7 @@ export default async function Home() {
               ))}
           </div>
           <p className="max-w-xl mt-2 text-lg text-slate-700">
-            ChatPDF: Talk to Your Documents, Get Instant Answers
+            ChatPDF: Talk to Your Documents, Get Instant Answers !
           </p>
           <div className="w-full mt-4">
             {isAuth ? (
