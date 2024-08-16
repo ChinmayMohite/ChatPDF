@@ -38,6 +38,7 @@
     "next": "14.2.5",
     "openai-edge": "^1.2.2",
     "pdf-parse": "^1.1.1",
+    "razorpay": "^2.9.4",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-dropzone": "^14.2.3",
@@ -45,6 +46,7 @@
     "react-loader-spinner": "^6.1.6",
     "react-markdown": "^9.0.1",
     "remark-gfm": "^4.0.0",
+    "shortid": "^2.2.16",
     "tailwind-merge": "^2.4.0",
     "tailwind-scrollbar-hide": "^1.1.7",
     "tailwindcss-animate": "^1.0.7"
